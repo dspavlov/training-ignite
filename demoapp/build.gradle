@@ -1,1 +1,9 @@
 apply plugin: 'java'
+
+dependecies {
+    //todo add Apache Ignite Core dependency {{
+
+    compile (group: 'org.apache.ignite', name: 'ignite-core', version: ignVer)
+
+    // todo }}
+}
