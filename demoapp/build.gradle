@@ -5,13 +5,11 @@ repositories {
 }
 
 dependencies {
-    //todo add Apache Ignite Core dependency {{
+    // TODO (lab1) add Apache Ignite Core dependency {{
     // you can use hints provided by https://mvnrepository.com/ it contains
     // prepared gradle dependencies, just search for 'ignite-core' maven dependency'
 
     compile (group: 'org.apache.ignite', name: 'ignite-core', version: '2.7.5')
 
-    // todo }}
-
-
+    compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.10.14'
 }
