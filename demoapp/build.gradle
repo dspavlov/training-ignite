@@ -1,9 +1,17 @@
 apply plugin: 'java'
 
-dependecies {
-    //todo add Apache Ignite Core dependency {{
+repositories {
+    mavenCentral();
+}
 
-    compile (group: 'org.apache.ignite', name: 'ignite-core', version: ignVer)
+dependencies {
+    //todo add Apache Ignite Core dependency {{
+    // you can use hints provided by https://mvnrepository.com/ it contains
+    // prepared gradle dependencies, just search for 'ignite-core' maven dependency'
+
+    compile (group: 'org.apache.ignite', name: 'ignite-core', version: '2.7.5')
 
     // todo }}
+
+
 }
