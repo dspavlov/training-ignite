@@ -38,8 +38,6 @@ public class MassClientLoader {
             InputStream stream = MassClientLoader.class.getResourceAsStream("/clients.json");
             A.ensure(stream != null, "Stream with test data was not found");
 
-            GsonBuilder gson = new GsonBuilder();
-
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
 
             TypeToken<ArrayList<Client>> typeTok = new TypeToken<ArrayList<Client>>() {

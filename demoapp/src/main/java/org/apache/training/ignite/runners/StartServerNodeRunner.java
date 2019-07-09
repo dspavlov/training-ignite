@@ -7,6 +7,7 @@ import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.configuration.ConnectorConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
@@ -24,9 +25,14 @@ public class StartServerNodeRunner {
 
         //TODO (lab 1) Set cache configuration, Atomic and Partitioned
         ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
-            .setCacheMode(CacheMode.PARTITIONED);
+            .setCacheMode(CacheMode.PARTITIONED)
+            .setBackups(1);
 
         IgniteConfiguration cfg = new IgniteConfiguration();
+
+        ConnectorConfiguration connectorCfg = new ConnectorConfiguration();
+
+        cfg.setConnectorConfiguration(connectorCfg);
 
         cfg.setCacheConfiguration(ccfg);
 

@@ -35,6 +35,10 @@ public class SingleClientLoader {
 
             Client loadedClient = storage.load(customerKey);
             System.out.println("Client data " + loadedClient);
+
+            // you can also check if client is available via REST API:
+            // http://localhost:8080/ignite?cmd=get&key=4041&cacheName=clients&keyType=long
+            // http://localhost:8080/ignite?cmd=qryscanexe&pageSize=100&cacheName=clients&keyType=long
         }
         catch (Exception e) {
             e.printStackTrace();

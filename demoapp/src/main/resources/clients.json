@@ -5,6 +5,14 @@
     phoneNumber: "044 668 18 00"
   },
   {
+    name: "Davor Perry",
+    phoneNumber: "+79111234567"
+  },
+  {
+    name: "Kenneth Kuster",
+    email: "kkuster@apache.org"
+  },
+  {
     name: "Dmitriy Pavlov",
     email: "dpavlov@apache.org",
     phoneNumber: "+79217500830"

@@ -1,5 +1,6 @@
 package org.apache.training.ignite;
 
+import com.google.common.base.Strings;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -91,11 +92,13 @@ public class ClientStorage {
      */
     public void saveAll(List<Client> list) {
         Map<Long, Client> map = new HashMap<>();
+
         list.forEach(client -> {
             preprocessClient(client);
 
             map.put(client.id(), client);
         });
+
         cache.putAll(map);
     }
 
@@ -104,7 +107,8 @@ public class ClientStorage {
             client.id((long)(Math.random() * Long.MAX_VALUE));
 
         try {
-            client.phone(normalizePhoneNumber(client.phone()));
+            if (!Strings.isNullOrEmpty(client.phone()))
+                client.phone(normalizePhoneNumber(client.phone()));
         }
         catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
