@@ -1,5 +1,6 @@
 package org.apache.training.ignite;
 
+import java.util.Collection;
 import java.util.StringJoiner;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
@@ -51,5 +52,9 @@ public class Client {
 
     public void id(long l) {
         this.id = l;
+    }
+
+    public String name() {
+        return name;
     }
 }
