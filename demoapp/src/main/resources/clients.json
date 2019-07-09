@@ -1,0 +1,12 @@
+[
+  {
+    name: "John Taylor",
+    email: "johnt@domain.org",
+    phoneNumber: "044 668 18 00"
+  },
+  {
+    name: "Dmitriy Pavlov",
+    email: "dpavlov@apache.org",
+    phoneNumber: "+79217500830"
+  }
+]

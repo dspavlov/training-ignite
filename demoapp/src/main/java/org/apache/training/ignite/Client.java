@@ -46,4 +46,8 @@ public class Client {
     public void phone(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public void id(long l) {
+        this.id = l;
+    }
 }

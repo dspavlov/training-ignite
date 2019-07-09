@@ -3,6 +3,9 @@ package org.apache.training.ignite;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.cache.Cache;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
@@ -39,11 +42,7 @@ public class ClientStorage {
      * @param client Client.
      */
     public void save(Client client) {
-        try {
-            client.phone(normalizePhoneNumber(client.phone()));
-        } catch (NumberParseException e) {
-            System.err.println("NumberParseException was thrown: " + e.toString());
-        }
+        preprocessClient(client);
 
         // TODO (lab1) Implement putting into cache operation, you can obtain Client id from entity
         cache.put(client.id(), client);
@@ -74,15 +73,48 @@ public class ClientStorage {
             phoneNumber = phone;
         }
 
-        try (QueryCursor<Cache.Entry<Long, Client>> query
-                 = cache.query(new SqlQuery<Long, Client>(Client.class, "where phoneNumber=?"))) {
-            for(Cache.Entry<Long, Client> clientEntry: query) {
-                return clientEntry.getValue();
-            }
+        try (QueryCursor<Cache.Entry<Long, Client>> qry
+                 = cache.query(
+            new SqlQuery<Long, Client>(Client.class, "where phoneNumber=?")
+                .setArgs(phoneNumber))) {
+
+            if (qry.iterator().hasNext())
+                return qry.iterator().next().getValue();
         }
 
         return null;
 
+    }
 
+    /**
+     * @param list List of clients to save.
+     */
+    public void saveAll(List<Client> list) {
+        Map<Long, Client> map = new HashMap<>();
+        list.forEach(client -> {
+            preprocessClient(client);
+
+            map.put(client.id(), client);
+        });
+        cache.putAll(map);
+    }
+
+    private void preprocessClient(Client client) {
+        if (client.id() == 0)
+            client.id((long)(Math.random() * Long.MAX_VALUE));
+
+        try {
+            client.phone(normalizePhoneNumber(client.phone()));
+        }
+        catch (NumberParseException e) {
+            System.err.println("NumberParseException was thrown: " + e.toString());
+        }
+    }
+
+    /**
+     *
+     */
+    public long size() {
+        return cache.size();
     }
 }
