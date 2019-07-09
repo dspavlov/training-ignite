@@ -39,6 +39,9 @@ public class SingleClientLoader {
             // you can also check if client is available via REST API:
             // http://localhost:8080/ignite?cmd=get&key=4041&cacheName=clients&keyType=long
             // http://localhost:8080/ignite?cmd=qryscanexe&pageSize=100&cacheName=clients&keyType=long
+
+            Client cliReloaded = storage.findClientByPhone(client.phone());
+            System.out.println("Client found by phone " + cliReloaded);
         }
         catch (Exception e) {
             e.printStackTrace();

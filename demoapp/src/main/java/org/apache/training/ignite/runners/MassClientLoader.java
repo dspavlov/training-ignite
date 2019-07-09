@@ -18,6 +18,9 @@ import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 import org.apache.training.ignite.Client;
 import org.apache.training.ignite.ClientStorage;
 
+/**
+ * Stores test data into cache.
+ */
 public class MassClientLoader {
     /**
      * @param args Args.

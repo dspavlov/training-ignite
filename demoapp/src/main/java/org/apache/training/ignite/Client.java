@@ -12,10 +12,12 @@ public class Client {
     @QuerySqlField
     private String name;
 
+    @QuerySqlField
     private String email;
 
     //TODO (lab 2) make field visible for queries engine
-    @QuerySqlField
+    //TODO (lab 2) setup index.
+    @QuerySqlField(index = true)
     private String phoneNumber;
 
     public Client(int id, String name, String email, String phoneNumber) {

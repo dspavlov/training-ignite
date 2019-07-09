@@ -6,11 +6,13 @@ import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.ConnectorConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
+import org.apache.training.ignite.Client;
 import org.apache.training.ignite.ClientStorage;
 
 /**
@@ -27,6 +29,9 @@ public class StartServerNodeRunner {
         ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
             .setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1);
+
+        // TODO (lab 2) Set up cache to be visible by SQL engine
+        ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
 
         IgniteConfiguration cfg = new IgniteConfiguration();
 

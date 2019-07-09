@@ -5,6 +5,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.cache.Cache;
@@ -63,24 +64,31 @@ public class ClientStorage {
         return cache.get(key);
     }
 
+    /**
+     * Finds client by phone number. Normalizes pnoe
+     * @param phone Phone.
+     */
     public Client findClientByPhone(String phone) {
-        // TODO (lab 2) Use Query for find client
         String phoneNumber;
         try {
             phoneNumber = normalizePhoneNumber(phone);
         }
         catch (NumberParseException e) {
-            e.printStackTrace();
+            System.err.println("NumberParseException was thrown: " + e.toString());
+
             phoneNumber = phone;
         }
 
+        // TODO (lab 2) Use Query for find client using phoneNumber prepared for query.
         try (QueryCursor<Cache.Entry<Long, Client>> qry
                  = cache.query(
-            new SqlQuery<Long, Client>(Client.class, "where phoneNumber=?")
+            new SqlQuery<Long, Client>(Client.class, "where phoneNumber = ?")
                 .setArgs(phoneNumber))) {
 
-            if (qry.iterator().hasNext())
-                return qry.iterator().next().getValue();
+            Iterator<Cache.Entry<Long, Client>> iter = qry.iterator();
+
+            if (iter.hasNext())
+                return iter.next().getValue();
         }
 
         return null;
@@ -102,6 +110,11 @@ public class ClientStorage {
         cache.putAll(map);
     }
 
+    /**
+     * Runs changes before saving client in DB to provide consistent results in queries.
+     *
+     * @param client Client.
+     */
     private void preprocessClient(Client client) {
         if (client.id() == 0)
             client.id((long)(Math.random() * Long.MAX_VALUE));
