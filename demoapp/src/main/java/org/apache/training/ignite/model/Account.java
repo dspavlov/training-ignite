@@ -19,17 +19,21 @@
 package org.apache.training.ignite.model;
 
 import org.apache.ignite.cache.affinity.AffinityKeyMapped;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 public class Account {
-    long id;
+    private long id = -1;
 
     @AffinityKeyMapped
-    long ownerClientId;
+    @QuerySqlField(index = true)
+    private long ownerClientId = -1;
 
     /** Balance in smallest possible amount of money for a currency, count of cents. */
-    long balance;
+    private long balance;
 
-    String currencyCode;
+    private String currencyCode;
+
+    private long createdTs = System.currentTimeMillis();
 
     /**
      *
@@ -44,9 +48,34 @@ public class Account {
         return this;
     }
 
-    public Account balance(int balance) {
+    public Account balance(long balance) {
         this.balance = balance;
 
         return this;
+    }
+
+    public long id() {
+        return id;
+    }
+
+    public Account id(long l) {
+        id = l;
+
+        return this;
+    }
+
+    /**
+     *
+     */
+    public long balance() {
+        return balance;
+    }
+
+    public String currencyCode() {
+        return currencyCode;
+    }
+
+    public long createdTs() {
+        return createdTs;
     }
 }

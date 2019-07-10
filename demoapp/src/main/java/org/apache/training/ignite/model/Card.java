@@ -20,13 +20,17 @@ package org.apache.training.ignite.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.ignite.cache.affinity.AffinityKeyMapped;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 public class Card {
-    long id;
+    private long id;
 
-    long cardholderId;
+    @AffinityKeyMapped
+    @QuerySqlField(index = true)
+    private long cardholderId;
 
-    long accountId;
+    private long accountId;
 
-    List<Plastic> plastics = new ArrayList<>();
+    private List<Plastic> plastics = new ArrayList<>();
 }

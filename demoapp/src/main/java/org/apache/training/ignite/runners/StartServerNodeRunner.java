@@ -22,15 +22,12 @@ import java.io.IOException;
 import java.util.Collections;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
-import org.apache.ignite.cache.CacheAtomicityMode;
-import org.apache.ignite.cache.CacheMode;
-import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.ConnectorConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
-import org.apache.training.ignite.model.Client;
+import org.apache.training.ignite.AccountStorage;
 import org.apache.training.ignite.ClientStorage;
 
 /**
@@ -41,23 +38,15 @@ public class StartServerNodeRunner {
      * @param args Args.
      */
     public static void main(String[] args) throws IOException {
-        CacheConfiguration ccfg = new CacheConfiguration(ClientStorage.CACHE_NAME);
+        CacheConfiguration ccfg = ClientStorage.cacheConfig();
 
-        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
-        ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
-            .setCacheMode(CacheMode.PARTITIONED)
-            .setBackups(1);
-
-        // TODO (lab 2) Set up cache to be visible by SQL engine
-        ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
+        CacheConfiguration acntCfg = AccountStorage.cacheConfig();
 
         IgniteConfiguration cfg = new IgniteConfiguration();
 
-        ConnectorConfiguration connectorCfg = new ConnectorConfiguration();
+        cfg.setCacheConfiguration(ccfg, acntCfg);
 
-        cfg.setConnectorConfiguration(connectorCfg);
-
-        cfg.setCacheConfiguration(ccfg);
+        cfg.setConnectorConfiguration(new ConnectorConfiguration());
 
         // Limiting connection with local node only to prevent unexpected clusters building.
         cfg.setDiscoverySpi(
@@ -69,4 +58,5 @@ public class StartServerNodeRunner {
             System.in.read();
         }
     }
+
 }

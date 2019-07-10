@@ -25,7 +25,7 @@ import org.apache.ignite.cache.query.annotations.QuerySqlField;
  *
  */
 public class Client {
-    private long id;
+    private long id = -1;
 
     @QuerySqlField
     private String name;

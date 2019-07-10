@@ -22,6 +22,7 @@ import com.google.common.base.Strings;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,10 +31,15 @@ import javax.cache.Cache;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.cache.CacheAtomicityMode;
+import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlQuery;
+import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.internal.util.typedef.internal.A;
 import org.apache.training.ignite.model.Client;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -57,6 +63,22 @@ public class ClientStorage {
 
         A.ensure(cache != null, "Cache [" + CACHE_NAME + "] does not exist. " +
             "Please make sure it was configured at client or server node: " + ignite.cacheNames());
+    }
+
+    /**
+     * @return Cache configuration for storing clients.
+     */
+    @NotNull public static CacheConfiguration cacheConfig() {
+        CacheConfiguration ccfg = new CacheConfiguration(CACHE_NAME);
+
+        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
+        ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
+            .setCacheMode(CacheMode.PARTITIONED)
+            .setBackups(1);
+
+        // TODO (lab 2) Set up cache to be visible by SQL engine
+        ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
+        return ccfg;
     }
 
     /**
@@ -135,7 +157,7 @@ public class ClientStorage {
      * @param client Client.
      */
     private void preprocessClient(Client client) {
-        if (client.id() == 0)
+        if (client.id() <= 0)
             client.id((long)(Math.random() * Long.MAX_VALUE));
 
         try {

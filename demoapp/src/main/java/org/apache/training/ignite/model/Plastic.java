@@ -1,7 +1,7 @@
 package org.apache.training.ignite.model;
 
 public class Plastic {
-    String pan;
+    private String pan;
 
-    short panSeqNumber;
+    private short panSeqNumber;
 }
