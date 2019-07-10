@@ -18,33 +18,40 @@
 */
 package org.apache.training.ignite;
 
+import com.google.common.collect.Lists;
+import org.apache.training.ignite.model.Account;
 import org.apache.training.ignite.model.Client;
 import org.apache.training.ignite.runners.StartServerNodeRunner;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
- * Test for query implementation for Lab 2: Find client by phone number.
- *
  * <b>Note:</b> Before running test start server node by running {@link StartServerNodeRunner}.
  */
-public class FindClientByPhoneTest extends AbstractLabIntegrationTest {
+public class AccountTransferTest extends AbstractLabIntegrationTest {
     /** Storage. */
     private ClientStorage clients = new ClientStorage();
 
+    /** Storage. */
+    private AccountStorage accounts = new AccountStorage();
+
+    /** Account. */
+    private AccountTransfer transfer = new AccountTransfer();
+
     @Test
-    public void testSearchClientByPhone() {
-        String phoneNum = "+79173274107";
-        Client client = new Client(7007, "Ivan Ivanov", "ivan@ivanov.ru", phoneNum);
-        System.out.println("Saving client " + client);
-        clients.save(client);
+    public void testAcntTransfer() {
+        int srcId = 10001;
+        Client src = new Client(srcId, "Initiator", "init@test.test", "+7931332112321");
+        String phoneNum = "+79217502321";
+        int destId = 10002;
+        Client dest = new Client(destId, "Destionation", "dest@test.test", phoneNum);
 
-        Client foundByPhone = clients.findClientByPhone(phoneNum);
-        System.out.println("Client found " + foundByPhone);
+        clients.saveAll(Lists.newArrayList(src, dest));
 
-        assertNotNull(foundByPhone);
-        assertTrue(foundByPhone.phone().contains("917"));
+        Account account = new Account()
+            .ownerClientId(srcId)
+            .balance(10000);
+
+        transfer.transferToByPhoneNumber(src, account, phoneNum, 9999);
+
     }
 }

@@ -18,26 +18,19 @@
 */
 package org.apache.training.ignite;
 
+import org.apache.ignite.internal.util.typedef.internal.A;
+import org.apache.training.ignite.model.Account;
 import org.apache.training.ignite.model.Client;
-import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+public class AccountTransfer {
+    ClientStorage clients = new ClientStorage();
+    AccountStorage accounts = new AccountStorage();
 
-/**
- * Test for query implementation for Lab 2: Find client by phone number
- */
-public class LoadSaveClientTest extends AbstractLabIntegrationTest {
-    private ClientStorage storage = new ClientStorage();
+    public void transferToByPhoneNumber(Client initiator, Account from, String toPhoneNum, long amount) {
+        Client dest = clients.findClientByPhone(toPhoneNum);
+        A.ensure(dest != null, "Destination account not found by phone [" + toPhoneNum + "]");
 
-    @Test
-    public void testSaveLoadClient() {
-        Client client = new Client(777200, "Jennifer Stain", "jenny@boeing.com", "+1-541-754-3010");
-        System.out.println("Saving client " + client);
-        storage.save(client);
+        A.ensure(initiator.id() == from.ownerClientId(), "Initiator is not an owner, power of attorney is not implemented");
 
-        Client reloadedFromGrid = storage.load(client.id());
-        assertNotNull(reloadedFromGrid);
-        assertTrue(reloadedFromGrid.phone().contains("754-3010"));
     }
 }
