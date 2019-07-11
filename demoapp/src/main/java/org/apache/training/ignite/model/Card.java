@@ -20,13 +20,11 @@ package org.apache.training.ignite.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.ignite.cache.affinity.AffinityKeyMapped;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 public class Card {
     private long id;
 
-    @AffinityKeyMapped
     @QuerySqlField(index = true)
     private long cardholderId;
 

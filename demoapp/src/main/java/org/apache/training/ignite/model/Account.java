@@ -18,13 +18,11 @@
 */
 package org.apache.training.ignite.model;
 
-import org.apache.ignite.cache.affinity.AffinityKeyMapped;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 public class Account {
     private long id = -1;
 
-    @AffinityKeyMapped
     @QuerySqlField(index = true)
     private long ownerClientId = -1;
 
