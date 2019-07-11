@@ -33,11 +33,14 @@ import org.apache.ignite.IgniteCache;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.cache.CachePeekMode;
 import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.internal.util.typedef.internal.A;
+import org.apache.ignite.lang.IgniteRunnable;
+import org.apache.ignite.resources.IgniteInstanceResource;
 import org.apache.training.ignite.model.Client;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,13 +53,14 @@ public class ClientStorage {
 
     /** Cache instance */
     private final IgniteCache<Long, Client> cache;
+    private final Ignite ignite;
 
     /** Phone util. */
     private PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     public ClientStorage() {
         // TODO (lab1) Get an instance of Ignite cache.
-        Ignite ignite = Ignition.ignite();
+        ignite = Ignition.ignite();
 
         // TODO (lab1) Get an instance of named cache.
         this.cache = ignite.cache(CACHE_NAME);
@@ -174,5 +178,23 @@ public class ClientStorage {
      */
     public long size() {
         return cache.size();
+    }
+
+    public void loginSummary() {
+        ignite.compute(ignite.cluster().forServers())
+            .broadcast(new IgniteRunnable() {
+                @IgniteInstanceResource
+                Ignite ignite;
+
+                @Override public void run() {
+                    //TODO (Lab 4)
+                    IgniteCache<Long, Client> cache = ignite.cache(CACHE_NAME);
+                    Iterable<Cache.Entry<Long, Client>> entries = cache.localEntries(CachePeekMode.PRIMARY);
+
+                    for (Cache.Entry<Long, Client> next : entries) {
+
+                    }
+                }
+            });
     }
 }
