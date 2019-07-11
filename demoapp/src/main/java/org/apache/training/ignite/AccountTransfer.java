@@ -77,7 +77,7 @@ public class AccountTransfer {
             return true;
         };
 
-        //TODO Lab 2: Start and commit transaction
+        //TODO (Lab 3): Start and commit transaction
         try (Transaction tx = ignite.transactions().txStart(
             TransactionConcurrency.PESSIMISTIC,
             TransactionIsolation.REPEATABLE_READ)) {
