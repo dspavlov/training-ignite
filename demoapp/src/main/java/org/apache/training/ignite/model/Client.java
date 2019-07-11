@@ -38,6 +38,8 @@ public class Client {
     @QuerySqlField(index = true)
     private String phoneNumber;
 
+    private long lastLoginTs;
+
     public Client(int id, String name, String email, String phoneNumber) {
         this.id = id;
         this.name = name;
@@ -73,5 +75,13 @@ public class Client {
 
     public String name() {
         return name;
+    }
+
+    public long lastLoginTs() {
+        return lastLoginTs;
+    }
+
+    public void lastLoginTs(long ts) {
+        lastLoginTs = ts;
     }
 }

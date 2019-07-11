@@ -22,6 +22,8 @@ import com.google.common.base.Strings;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import java.time.Duration;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import java.util.Map;
 import javax.cache.Cache;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
+import org.apache.ignite.IgniteCompute;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
@@ -37,9 +40,10 @@ import org.apache.ignite.cache.CachePeekMode;
 import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlQuery;
+import org.apache.ignite.cluster.ClusterGroup;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.internal.util.typedef.internal.A;
-import org.apache.ignite.lang.IgniteRunnable;
+import org.apache.ignite.lang.IgniteCallable;
 import org.apache.ignite.resources.IgniteInstanceResource;
 import org.apache.training.ignite.model.Client;
 import org.jetbrains.annotations.NotNull;
@@ -114,21 +118,21 @@ public class ClientStorage {
      * @param phone Phone.
      */
     public Client findClientByPhone(String phone) {
-        String phoneNumber;
+        String phoneNum;
         try {
-            phoneNumber = normalizePhoneNumber(phone);
+            phoneNum = normalizePhoneNumber(phone);
         }
         catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
 
-            phoneNumber = phone;
+            phoneNum = phone;
         }
 
         // TODO (lab 2) Use Query for find client using phoneNumber prepared for query.
         try (QueryCursor<Cache.Entry<Long, Client>> qry
                  = cache.query(
             new SqlQuery<Long, Client>(Client.class, "where phoneNumber = ?")
-                .setArgs(phoneNumber))) {
+                .setArgs(phoneNum))) {
 
             Iterator<Cache.Entry<Long, Client>> iter = qry.iterator();
 
@@ -180,21 +184,42 @@ public class ClientStorage {
         return cache.size();
     }
 
-    public void loginSummary() {
-        ignite.compute(ignite.cluster().forServers())
-            .broadcast(new IgniteRunnable() {
-                @IgniteInstanceResource
-                Ignite ignite;
+    public int clientsCntLoggedInToday() {
+        //TODO (Lab 4) Get cluster group, servers only
+        ClusterGroup clusterGrp = ignite.cluster().forServers();
 
-                @Override public void run() {
-                    //TODO (Lab 4)
-                    IgniteCache<Long, Client> cache = ignite.cache(CACHE_NAME);
-                    Iterable<Cache.Entry<Long, Client>> entries = cache.localEntries(CachePeekMode.PRIMARY);
+        //TODO (Lab 4) Get ignite compute for this cluster group.
+        IgniteCompute compute = ignite.compute(clusterGrp);
 
-                    for (Cache.Entry<Long, Client> next : entries) {
+        //TODO (Lab 4) Finish implemetation of callable,
+        IgniteCallable<Integer> call = new IgniteCallable<Integer>() {
+            @IgniteInstanceResource
+            Ignite ignite;
 
-                    }
+            @Override public Integer call() {
+                IgniteCache<Long, Client> cache = ignite.cache(CACHE_NAME);
+                Iterable<Cache.Entry<Long, Client>> entries = cache.localEntries(CachePeekMode.PRIMARY);
+
+                long tsBorder = System.currentTimeMillis() - Duration.ofDays(1).toMillis();
+                int loginToday = 0;
+                for (Cache.Entry<Long, Client> next : entries) {
+
+                    long lastLogin = next.getValue().lastLoginTs();
+
+                    if (lastLogin != 0 && lastLogin > tsBorder)
+                        loginToday++;
                 }
-            });
+
+                System.out.println("Collecting: client logged in today count: " + loginToday
+                    + " at " + ignite.cluster().localNode().id());
+
+                return loginToday;
+            }
+        };
+
+        // TODO (Lab 4) call broadcast
+        Collection<Integer> res = compute.broadcast(call);
+
+        return res.stream().mapToInt(i -> i).sum();
     }
 }

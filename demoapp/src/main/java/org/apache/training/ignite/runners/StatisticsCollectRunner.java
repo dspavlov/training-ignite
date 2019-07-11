@@ -18,42 +18,29 @@
 */
 package org.apache.training.ignite.runners;
 
-import java.io.IOException;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
-import org.apache.ignite.configuration.CacheConfiguration;
-import org.apache.ignite.configuration.ConnectorConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.training.ignite.AccountStorage;
 import org.apache.training.ignite.ClientStorage;
 
 /**
- *
+ * Stores test data into cache.
  */
-public class StartServerNodeRunner {
+public class StatisticsCollectRunner {
     /**
      * @param args Args.
      */
-    public static void main(String[] args) throws IOException {
-        CacheConfiguration ccfg = ClientStorage.cacheConfig();
+    public static void main(String[] args) {
+        IgniteConfiguration cfg = IgniteConfigUtil.commonConfig(new IgniteConfiguration()).setClientMode(true);
 
-        CacheConfiguration acntCfg = AccountStorage.cacheConfig();
+        try (Ignite ignClient = Ignition.start(cfg)) {
+            ClientStorage storage = new ClientStorage();
 
-        IgniteConfiguration cfg = new IgniteConfiguration();
-
-        cfg.setCacheConfiguration(ccfg, acntCfg);
-
-        cfg.setConnectorConfiguration(new ConnectorConfiguration());
-
-        //TODO (Lab 4) Enable zero deployment for server nodes
-        cfg.setPeerClassLoadingEnabled(true);
-
-        IgniteConfigUtil.limitConnectionWithLocalhost(cfg);
-
-        try (Ignite ignite = Ignition.start(cfg)) {
-            System.out.print("Press any key to stop server.");
-            System.in.read();
+            System.out.println("Results: Clients logged-in today: " + storage.clientsCntLoggedInToday()
+                + " from " + storage.size());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
 }

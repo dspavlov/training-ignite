@@ -18,12 +18,10 @@
 */
 package org.apache.training.ignite;
 
-import java.util.Collections;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
+import org.apache.training.ignite.runners.IgniteConfigUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -37,10 +35,7 @@ public abstract class AbstractLabIntegrationTest {
     public static void connectToIgnite() {
         IgniteConfiguration cfg = new IgniteConfiguration();
 
-        // Limiting connection with local node only to prevent unexpected clusters building.
-        cfg.setDiscoverySpi(
-            new TcpDiscoverySpi().setIpFinder(
-                new TcpDiscoveryVmIpFinder().setAddresses(Collections.singleton("localhost"))));
+        IgniteConfigUtil.commonConfig(cfg);
 
         cfg.setClientMode(true);
 

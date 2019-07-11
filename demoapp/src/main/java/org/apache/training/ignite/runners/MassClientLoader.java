@@ -24,14 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.internal.util.typedef.internal.A;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 import org.apache.training.ignite.model.Client;
 import org.apache.training.ignite.ClientStorage;
 
@@ -45,10 +42,9 @@ public class MassClientLoader {
     public static void main(String[] args) {
         IgniteConfiguration cfg = new IgniteConfiguration();
 
-        // Limiting connection with local node only to prevent unexpected clusters building.
-        cfg.setDiscoverySpi(
-            new TcpDiscoverySpi().setIpFinder(
-                new TcpDiscoveryVmIpFinder().setAddresses(Collections.singleton("localhost"))));
+        IgniteConfigUtil.limitConnectionWithLocalhost(cfg);
+
+        IgniteConfigUtil.commonConfig(cfg);
 
         cfg.setClientMode(true);
 
@@ -64,6 +60,9 @@ public class MassClientLoader {
             };
 
             List<Client> list = new Gson().fromJson(reader, typeTok.getType());
+
+            //emulating every client login operation
+            list.forEach(client -> client.lastLoginTs(System.currentTimeMillis()));
 
             storage.saveAll(list);
 
