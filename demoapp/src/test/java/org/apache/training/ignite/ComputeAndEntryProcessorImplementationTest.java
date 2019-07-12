@@ -55,6 +55,7 @@ public class ComputeAndEntryProcessorImplementationTest extends AbstractLabInteg
         assertTrue(todayUpdated >= today + 1);
     }
 
+    @Test
     public void testEntryProcessor() {
         List<Client> clientsToSave = new ArrayList<>();
 
