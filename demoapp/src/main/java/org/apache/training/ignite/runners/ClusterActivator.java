@@ -18,26 +18,25 @@
 */
 package org.apache.training.ignite.runners;
 
+import java.util.Collection;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.cluster.ClusterNode;
 import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.training.ignite.ClientStorage;
 
-/**
- * Stores test data into cache.
- */
-public class StatisticsCollectRunner {
+public class ClusterActivator {
     /**
      * @param args Args.
      */
     public static void main(String[] args) {
-        IgniteConfiguration cfg = IgniteConfigUtil.commonConfig(new IgniteConfiguration()).setClientMode(true);
+        IgniteConfiguration cfg = IgniteConfigUtil
+            .commonConfig(new IgniteConfiguration())
+            .setClientMode(true);
 
-        try (Ignite ignClient = Ignition.start(cfg)) {
-            ClientStorage storage = new ClientStorage();
-
-            System.out.println("Results: Clients logged-in today: " + storage.clientsCntLoggedInToday()
-                + " from " + storage.size());
+        try (Ignite ignite = Ignition.start(cfg)) {
+            // TODO (Lab 6) Complete Activator Implementation, activate cluster
+            // alternatively, you can use ./control.sh --activate command from Ignite distribution
+            ignite.cluster().active(true);
         }
     }
 }

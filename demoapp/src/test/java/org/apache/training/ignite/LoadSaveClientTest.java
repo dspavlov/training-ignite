@@ -28,11 +28,12 @@ import static org.junit.Assert.assertTrue;
  * Test for query implementation for Lab 2: Find client by phone number
  */
 public class LoadSaveClientTest extends AbstractLabIntegrationTest {
+    /** Client storage. */
     private ClientStorage clients = new ClientStorage();
 
     @Test
     public void testSaveLoadClient() {
-        Client client = new Client(777200, "Jennifer Stain", "jenny@boeing.com", "+1-541-754-3010");
+        Client client = new Client(777200, "Jennifer Stain", "jenny@test.com", "+1-541-754-3010");
         System.out.println("Saving client " + client);
         clients.save(client);
 

@@ -55,9 +55,5 @@ public class SingleClientLoader {
             Client cliReloaded = storage.findClientByPhone(client.phone());
             System.out.println("Client found by phone " + cliReloaded);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

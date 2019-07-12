@@ -36,14 +36,12 @@ import org.apache.training.ignite.model.Client;
 /**
  * Stores test data into cache.
  */
-public class MassClientLoader {
+public class JsonClientLoader {
     /**
      * @param args Args.
      */
     public static void main(String[] args) {
         IgniteConfiguration cfg = new IgniteConfiguration();
-
-        IgniteConfigUtil.limitConnectionWithLocalhost(cfg);
 
         IgniteConfigUtil.commonConfig(cfg);
 
@@ -52,7 +50,7 @@ public class MassClientLoader {
         try (Ignite ignClient = Ignition.start(cfg)) {
             ClientStorage storage = new ClientStorage();
 
-            InputStream stream = MassClientLoader.class.getResourceAsStream("/clients.json");
+            InputStream stream = JsonClientLoader.class.getResourceAsStream("/clients.json");
             A.ensure(stream != null, "Stream with test data was not found");
 
             InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
@@ -73,9 +71,5 @@ public class MassClientLoader {
             System.out.println("Clients " + ids.size() + " were added, todal in storage: " + storage.size() +
                 " Clients notified about new offer: " + notified);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

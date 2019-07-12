@@ -39,6 +39,11 @@ public class IgniteConfigUtil {
         return cfg;
     }
 
+    /**
+     * Utility method to set up Ignite configuration parameters common for all runnners.
+     *
+     * @param cfg Config.
+     */
     public static IgniteConfiguration commonConfig(IgniteConfiguration cfg) {
         limitConnectionWithLocalhost(cfg);
 

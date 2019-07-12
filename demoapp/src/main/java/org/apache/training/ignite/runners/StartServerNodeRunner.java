@@ -18,11 +18,14 @@
 */
 package org.apache.training.ignite.runners;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.ConnectorConfiguration;
+import org.apache.ignite.configuration.DataRegionConfiguration;
+import org.apache.ignite.configuration.DataStorageConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.training.ignite.AccountStorage;
 import org.apache.training.ignite.ClientStorage;
@@ -45,10 +48,24 @@ public class StartServerNodeRunner {
 
         cfg.setConnectorConfiguration(new ConnectorConfiguration());
 
-        //TODO (Lab 4) Enable zero deployment for server nodes
-        cfg.setPeerClassLoadingEnabled(true);
+        IgniteConfigUtil.commonConfig(cfg);
 
-        IgniteConfigUtil.limitConnectionWithLocalhost(cfg);
+        // Todo (Lab 6) : create new DataStorageConfiguration() and provide it to Ignite config
+        DataStorageConfiguration dsCfg = new DataStorageConfiguration();
+
+        // Todo (Lab 6) :create new DataRegionConfiguration() and provide it to data storage as default region
+        DataRegionConfiguration regConf = new DataRegionConfiguration();
+
+        // Todo (Lab 6): Enable persistence for region, set Max size, e.g. to 256Mbytes
+        regConf.setPersistenceEnabled(true).setMaxSize(256 * 1024L * 1024);
+
+
+        dsCfg.setStoragePath(new File(".").getAbsolutePath());
+
+        dsCfg.setDefaultDataRegionConfiguration(regConf);
+
+        cfg.setDataStorageConfiguration(dsCfg);
+        // Todo (Lab 6): Configure Ignite Work Directory to any local folder
 
         try (Ignite ignite = Ignition.start(cfg)) {
             System.out.print("Press any key to stop server.");
