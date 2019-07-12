@@ -18,10 +18,8 @@
 */
 package org.apache.training.ignite.runners;
 
-import java.util.Collection;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
-import org.apache.ignite.cluster.ClusterNode;
 import org.apache.ignite.configuration.IgniteConfiguration;
 
 public class ClusterActivator {
@@ -36,7 +34,7 @@ public class ClusterActivator {
         try (Ignite ignite = Ignition.start(cfg)) {
             // TODO (Lab 6) Complete Activator Implementation, activate cluster
             // alternatively, you can use ./control.sh --activate command from Ignite distribution
-            ignite.cluster().active(true);
+
         }
     }
 }
