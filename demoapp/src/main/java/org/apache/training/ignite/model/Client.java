@@ -38,7 +38,6 @@ public class Client {
 
     //TODO (lab 2) make field visible for queries engine
     //TODO (lab 2) setup index.
-    @QuerySqlField(index = true)
     private String phoneNumber;
 
     private long lastLoginTs;

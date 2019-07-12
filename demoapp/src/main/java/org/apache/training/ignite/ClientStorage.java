@@ -90,7 +90,8 @@ public class ClientStorage {
             .setBackups(1);
 
         // TODO (lab 2) Set up cache to be visible by SQL engine
-        ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
+
+
         return ccfg;
     }
 
@@ -133,17 +134,8 @@ public class ClientStorage {
             phoneNum = phone;
         }
 
-        // TODO (lab 2) Use Query for find client using phoneNumber prepared for query.
-        try (QueryCursor<Cache.Entry<Long, Client>> qry
-                 = cache.query(
-            new SqlQuery<Long, Client>(Client.class, "where phoneNumber = ?")
-                .setArgs(phoneNum))) {
+        // TODO (lab 2) Use Query for find client using (phoneNum) as argument prepared for query.
 
-            Iterator<Cache.Entry<Long, Client>> iter = qry.iterator();
-
-            if (iter.hasNext())
-                return iter.next().getValue();
-        }
 
         return null;
 
