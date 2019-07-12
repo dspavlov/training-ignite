@@ -57,7 +57,6 @@ public class AccountStorage {
         CacheConfiguration acntCfg = new CacheConfiguration(CACHE_NAME);
 
         //TODO (lab 3) Configure Cache Atomicity mode as Translactional
-        acntCfg.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
 
         acntCfg.setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1)

@@ -77,14 +77,9 @@ public class AccountTransfer {
             return true;
         };
 
-        //TODO (Lab 3): Start and commit transaction
-        try (Transaction tx = ignite.transactions().txStart(
-            TransactionConcurrency.PESSIMISTIC,
-            TransactionIsolation.REPEATABLE_READ)) {
+        //TODO (Lab 3): Start and commit transaction, do account transfer in transaction
 
-            doAccountTransfer(from.id(), to.id(), amount, riskSys);
-            tx.commit();
-        }
+        doAccountTransfer(from.id(), to.id(), amount, riskSys);
     }
 
     boolean tryTransfer(long fromAcntId, long toAcntId, long amount) {
