@@ -72,9 +72,11 @@ public class ComputeAndEntryProcessorImplementationTest extends AbstractLabInteg
         int notified = clients.sendMessage(2, ids, "Join Apache Ignite Project",
             " Visit https://ignite.apache.org/community/resources.html for more deatail, ");
 
-        assertTrue(!clients.load(ids.iterator().next()).messages().isEmpty());
+        assertTrue("Expected to notify at least 10 customers", notified >= 10);
 
-        assertTrue(notified > 10);
+        Client load = clients.load(ids.iterator().next());
+        
+        assertTrue(!load.messages().isEmpty());
     }
 
 }
