@@ -24,16 +24,16 @@ package org.apache.training.ignite.model;
  */
 public class CustomerMessage {
     /** Identificaiton of message/campaing type. */
-    int id;
+    private int id;
 
     /** Subject of Message. */
-    String subject;
+    private String subject;
 
     /** Text of Message. */
-    String message;
+    private String message;
 
     /** Marked as Read. */
-    boolean read;
+    private boolean read;
 
     public CustomerMessage(int typeId, String subj, String msg) {
         this.id = typeId;

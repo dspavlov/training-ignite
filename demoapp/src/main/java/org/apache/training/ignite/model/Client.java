@@ -19,6 +19,7 @@
 package org.apache.training.ignite.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
@@ -86,8 +87,10 @@ public class Client {
         return lastLoginTs;
     }
 
-    public void lastLoginTs(long ts) {
+    public Client lastLoginTs(long ts) {
         lastLoginTs = ts;
+
+        return this;
     }
 
     /**
@@ -104,5 +107,9 @@ public class Client {
             return false;
 
         return messages.add(new CustomerMessage(typeId, subj, msg));
+    }
+
+    public List<CustomerMessage> messages() {
+        return Collections.unmodifiableList(messages);
     }
 }
