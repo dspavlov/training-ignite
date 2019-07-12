@@ -47,8 +47,6 @@ public class IgniteConfigUtil {
     public static IgniteConfiguration commonConfig(IgniteConfiguration cfg) {
         limitConnectionWithLocalhost(cfg);
 
-        //TODO (Lab 4): Enable Zero Deployment feature, will be applied to all runners
-
         return cfg;
     }
 }

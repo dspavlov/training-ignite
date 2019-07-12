@@ -195,17 +195,10 @@ public class ClientStorage {
      * @return Number of customers used this system today.
      */
     public int clientsCntLoggedInToday() {
-        //TODO (Lab 4) Get cluster group, servers only
-
-        //TODO (Lab 4) Get ignite compute for this cluster group.
-
-        //TODO (Lab 4) Finish implemetation of callable,
         IgniteCallable<Integer> call = new IgniteCallable<Integer>() {
-            //TODO (Lab 4) Inject Ignite instance resource, avoid usage of storage's instance
 
             @Override public Integer call() {
                 IgniteCache<Long, Client> cache = ignite.cache(CACHE_NAME);
-                // TODO (Lab 4) get collection of localEntries(CachePeekMode.PRIMARY);
                 Iterable<Cache.Entry<Long, Client>> entries = null;
 
                 long tsBorder = System.currentTimeMillis() - Duration.ofDays(1).toMillis();
@@ -225,7 +218,6 @@ public class ClientStorage {
             }
         };
 
-        // TODO (Lab 4) call broadcast to all nodes to get a result
         Collection<Integer> res = null;
 
         return res.stream().mapToInt(i -> i).sum();
@@ -241,7 +233,6 @@ public class ClientStorage {
     public int sendMessage(int msgTypeId, Set<Long> customerIds, String subj, String msg) {
         Map<Long, EntryProcessorResult<Boolean>> results = null;
 
-        // TODO (lab 4) call mass entry processor invocation on cache for provided customer Identifiers.
         // use client.sendMessageIfAbsent(msgTypeId, subj, msg) to actually add message to a customer
 
 
