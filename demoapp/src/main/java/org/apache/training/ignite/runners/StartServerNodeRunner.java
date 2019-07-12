@@ -50,14 +50,6 @@ public class StartServerNodeRunner {
 
         IgniteConfigUtil.commonConfig(cfg);
 
-        // Todo (Lab 6) create new DataStorageConfiguration() and provide it to Ignite config
-
-        // Todo (Lab 6) create new DataRegionConfiguration() and provide it to data storage as default region
-
-        // Todo (Lab 6) Enable persistence for region, set Max size, e.g. to 256Mbytes
-
-        // Todo (Lab 6): Configure Ignite Work Directory to any local folder
-
         try (Ignite ignite = Ignition.start(cfg)) {
             System.out.print("Press any key to stop server.");
             System.in.read();
