@@ -77,8 +77,6 @@ public class AccountTransfer {
             return true;
         };
 
-        //TODO (Lab 3): Start and commit transaction, do account transfer in transaction
-
         doAccountTransfer(from.id(), to.id(), amount, riskSys);
     }
 

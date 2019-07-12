@@ -56,8 +56,6 @@ public class AccountStorage {
     @NotNull public static CacheConfiguration cacheConfig() {
         CacheConfiguration acntCfg = new CacheConfiguration(CACHE_NAME);
 
-        //TODO (lab 3) Configure Cache Atomicity mode as Translactional
-
         acntCfg.setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1)
             .setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Account.class)));
