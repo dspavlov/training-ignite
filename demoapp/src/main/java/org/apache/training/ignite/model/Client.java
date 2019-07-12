@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
-import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 /**
  *
@@ -30,14 +29,10 @@ import org.apache.ignite.cache.query.annotations.QuerySqlField;
 public class Client {
     private long id = -1;
 
-    @QuerySqlField
     private String name;
 
-    @QuerySqlField
     private String email;
 
-    //TODO (lab 2) make field visible for queries engine
-    //TODO (lab 2) setup index.
     private String phoneNumber;
 
     private long lastLoginTs;

@@ -61,18 +61,16 @@ public class ClientStorage {
     public static final String CACHE_NAME = "clients";
 
     /** Cache instance */
-    private final IgniteCache<Long, Client> cache;
-    private final Ignite ignite;
+    private IgniteCache<Long, Client> cache;
+    private Ignite ignite;
 
     /** Phone util. */
     private PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     public ClientStorage() {
-        // TODO (lab1) Get an instance of Ignite cache.
-        ignite = Ignition.ignite();
+        // TODO (lab1) Get an instance of Ignite.
 
-        // TODO (lab1) Get an instance of named cache.
-        this.cache = ignite.cache(CACHE_NAME);
+        // TODO (lab1) Get an instance of Ignite cache by Name.
 
         A.ensure(cache != null, "Cache [" + CACHE_NAME + "] does not exist. " +
             "Please make sure it was configured at client or server node: " + ignite.cacheNames());
@@ -84,13 +82,7 @@ public class ClientStorage {
     @NotNull public static CacheConfiguration cacheConfig() {
         CacheConfiguration ccfg = new CacheConfiguration(CACHE_NAME);
 
-        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
-        ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
-            .setCacheMode(CacheMode.PARTITIONED)
-            .setBackups(1);
-
-        // TODO (lab 2) Set up cache to be visible by SQL engine
-
+        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable 1 backup
 
         return ccfg;
     }
@@ -101,8 +93,9 @@ public class ClientStorage {
     public void save(Client client) {
         preprocessClient(client);
 
-        // TODO (lab1) Implement putting into cache operation, you can obtain Client id from entity
-        cache.put(client.id(), client);
+        // TODO (lab 1) Implement putting into cache operation, you can obtain Client id from entity
+
+
     }
 
     private String normalizePhoneNumber(String phone) throws NumberParseException {
@@ -116,7 +109,7 @@ public class ClientStorage {
      */
     public Client load(long key) {
         // TODO (lab1) Implement getting data from cache by key.
-        return cache.get(key);
+        return null;
     }
 
     /**
@@ -133,9 +126,6 @@ public class ClientStorage {
 
             phoneNum = phone;
         }
-
-        // TODO (lab 2) Use Query for find client using (phoneNum) as argument prepared for query.
-
 
         return null;
 
