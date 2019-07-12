@@ -68,10 +68,8 @@ public class ClientStorage {
     private PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     public ClientStorage() {
-        // TODO (lab1) Get an instance of Ignite cache.
         ignite = Ignition.ignite();
 
-        // TODO (lab1) Get an instance of named cache.
         this.cache = ignite.cache(CACHE_NAME);
 
         A.ensure(cache != null, "Cache [" + CACHE_NAME + "] does not exist. " +
@@ -84,12 +82,10 @@ public class ClientStorage {
     @NotNull public static CacheConfiguration cacheConfig() {
         CacheConfiguration ccfg = new CacheConfiguration(CACHE_NAME);
 
-        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
         ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
             .setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1);
 
-        // TODO (lab 2) Set up cache to be visible by SQL engine
         ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
         return ccfg;
     }
@@ -100,7 +96,6 @@ public class ClientStorage {
     public void save(Client client) {
         preprocessClient(client);
 
-        // TODO (lab1) Implement putting into cache operation, you can obtain Client id from entity
         cache.put(client.id(), client);
     }
 
@@ -114,7 +109,6 @@ public class ClientStorage {
      * @param key Key.
      */
     public Client load(long key) {
-        // TODO (lab1) Implement getting data from cache by key.
         return cache.get(key);
     }
 
@@ -133,7 +127,6 @@ public class ClientStorage {
             phoneNum = phone;
         }
 
-        // TODO (lab 2) Use Query for find client using phoneNumber prepared for query.
         try (QueryCursor<Cache.Entry<Long, Client>> qry
                  = cache.query(
             new SqlQuery<Long, Client>(Client.class, "where phoneNumber = ?")
@@ -195,15 +188,11 @@ public class ClientStorage {
      * @return Number of customers used this system today.
      */
     public int clientsCntLoggedInToday() {
-        //TODO (Lab 4) Get cluster group, servers only
         ClusterGroup clusterGrp = ignite.cluster().forServers();
 
-        //TODO (Lab 4) Get ignite compute for this cluster group.
         IgniteCompute compute = ignite.compute(clusterGrp);
 
-        //TODO (Lab 4) Finish implemetation of callable,
         IgniteCallable<Integer> call = new IgniteCallable<Integer>() {
-            //TODO (Lab 4) Inject Ignite instance resource, avoid usage of storage's instance
             @IgniteInstanceResource
             Ignite ignite;
 
@@ -228,7 +217,6 @@ public class ClientStorage {
             }
         };
 
-        // TODO (Lab 4) call broadcast
         Collection<Integer> res = compute.broadcast(call);
 
         return res.stream().mapToInt(i -> i).sum();
@@ -244,8 +232,6 @@ public class ClientStorage {
     public int sendMessage(int msgTypeId, Set<Long> customerIds, String subj, String msg) {
         Map<Long, EntryProcessorResult<Boolean>> results;
 
-        // TODO (lab 4) call mass entry processor invocation on cache for provided customer Identifiers.
-        // use client.sendMessageIfAbsent(msgTypeId, subj, msg) to actually add message to a customer
         results = cache.invokeAll(customerIds, new EntryProcessor<Long, Client, Boolean>() {
             @Override public Boolean process(MutableEntry<Long, Client> entry,
                 Object... arguments) throws EntryProcessorException {
