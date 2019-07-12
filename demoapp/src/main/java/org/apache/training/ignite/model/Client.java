@@ -37,7 +37,7 @@ public class Client {
     private String email;
 
     //TODO (lab 2) make field visible for queries engine
-    //TODO (lab 2) setup index.
+    //TODO (lab 2) setup index for this single field
     @QuerySqlField(index = true)
     private String phoneNumber;
 

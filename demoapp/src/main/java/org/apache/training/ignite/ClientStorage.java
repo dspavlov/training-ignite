@@ -68,10 +68,10 @@ public class ClientStorage {
     private PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     public ClientStorage() {
-        // TODO (lab1) Get an instance of Ignite cache.
+        // TODO (lab1) Get an instance of Ignite.
         ignite = Ignition.ignite();
 
-        // TODO (lab1) Get an instance of named cache.
+        // TODO (lab1) Get an instance of Ignite cache by name.
         this.cache = ignite.cache(CACHE_NAME);
 
         A.ensure(cache != null, "Cache [" + CACHE_NAME + "] does not exist. " +
@@ -84,13 +84,14 @@ public class ClientStorage {
     @NotNull public static CacheConfiguration cacheConfig() {
         CacheConfiguration ccfg = new CacheConfiguration(CACHE_NAME);
 
-        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
+        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable 1 backup
         ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
             .setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1);
 
-        // TODO (lab 2) Set up cache to be visible by SQL engine
+        // TODO (lab 2) Set up cache to be visible by SQL engine, add Query Entity from key and value class
         ccfg.setQueryEntities(Collections.singletonList(new QueryEntity(Long.class, Client.class)));
+
         return ccfg;
     }
 
@@ -201,7 +202,7 @@ public class ClientStorage {
         //TODO (Lab 4) Get ignite compute for this cluster group.
         IgniteCompute compute = ignite.compute(clusterGrp);
 
-        //TODO (Lab 4) Finish implemetation of callable,
+        //TODO (Lab 4) Complete implemetation of callable
         IgniteCallable<Integer> call = new IgniteCallable<Integer>() {
             //TODO (Lab 4) Inject Ignite instance resource, avoid usage of storage's instance
             @IgniteInstanceResource
@@ -209,6 +210,7 @@ public class ClientStorage {
 
             @Override public Integer call() {
                 IgniteCache<Long, Client> cache = ignite.cache(CACHE_NAME);
+                //TODO (Lab 4) get local entries, Cache Peek Mode = Primary
                 Iterable<Cache.Entry<Long, Client>> entries = cache.localEntries(CachePeekMode.PRIMARY);
 
                 long tsBorder = System.currentTimeMillis() - Duration.ofDays(1).toMillis();
