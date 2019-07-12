@@ -68,10 +68,8 @@ public class ClientStorage {
     private PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     public ClientStorage() {
-        // TODO (lab1) Get an instance of Ignite cache.
         ignite = Ignition.ignite();
 
-        // TODO (lab1) Get an instance of named cache.
         this.cache = ignite.cache(CACHE_NAME);
 
         A.ensure(cache != null, "Cache [" + CACHE_NAME + "] does not exist. " +
@@ -84,7 +82,6 @@ public class ClientStorage {
     @NotNull public static CacheConfiguration cacheConfig() {
         CacheConfiguration ccfg = new CacheConfiguration(CACHE_NAME);
 
-        //TODO (lab 1) Set cache configuration, Atomic and Partitioned, enable backups
         ccfg.setAtomicityMode(CacheAtomicityMode.ATOMIC)
             .setCacheMode(CacheMode.PARTITIONED)
             .setBackups(1);
@@ -101,7 +98,6 @@ public class ClientStorage {
     public void save(Client client) {
         preprocessClient(client);
 
-        // TODO (lab1) Implement putting into cache operation, you can obtain Client id from entity
         cache.put(client.id(), client);
     }
 
@@ -115,7 +111,6 @@ public class ClientStorage {
      * @param key Key.
      */
     public Client load(long key) {
-        // TODO (lab1) Implement getting data from cache by key.
         return cache.get(key);
     }
 

@@ -5,12 +5,8 @@ repositories {
 }
 
 dependencies {
-    // TODO (lab1) add Apache Ignite Core dependency {{
-    // you can use hints provided by https://mvnrepository.com/ it contains
-    // prepared gradle dependencies, just search for 'ignite-core' maven dependency'
     compile (group: 'org.apache.ignite', name: 'ignite-core', version: '2.7.5')
 
-    // TODO (lab1) - optional, add ignite-rest-http, start server
     compile (group: 'org.apache.ignite', name: 'ignite-rest-http', version: '2.7.5')
 
     // TODO (lab2) add Ignite Indexing to classpath
