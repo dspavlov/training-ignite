@@ -240,7 +240,10 @@ public class ClientStorage {
                 if (client == null)
                     return false;
 
-                return client.sendMessageIfAbsent(msgTypeId, subj, msg);
+                boolean snd = client.sendMessageIfAbsent(msgTypeId, subj, msg);
+                entry.setValue(client);
+
+                return snd;
             }
         }, subj, msg);
 
