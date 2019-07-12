@@ -29,7 +29,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.cache.Cache;
+import javax.cache.processor.EntryProcessor;
+import javax.cache.processor.EntryProcessorException;
+import javax.cache.processor.EntryProcessorResult;
+import javax.cache.processor.MutableEntry;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.IgniteCompute;
@@ -147,7 +152,7 @@ public class ClientStorage {
     /**
      * @param list List of clients to save.
      */
-    public void saveAll(List<Client> list) {
+    public Set<Long> saveAll(List<Client> list) {
         Map<Long, Client> map = new HashMap<>();
 
         list.forEach(client -> {
@@ -157,6 +162,8 @@ public class ClientStorage {
         });
 
         cache.putAll(map);
+
+        return map.keySet();
     }
 
     /**
@@ -184,6 +191,9 @@ public class ClientStorage {
         return cache.size();
     }
 
+    /**
+     * @return Number of customers used this system today.
+     */
     public int clientsCntLoggedInToday() {
         //TODO (Lab 4) Get cluster group, servers only
         ClusterGroup clusterGrp = ignite.cluster().forServers();
@@ -193,6 +203,7 @@ public class ClientStorage {
 
         //TODO (Lab 4) Finish implemetation of callable,
         IgniteCallable<Integer> call = new IgniteCallable<Integer>() {
+            //TODO (Lab 4) Inject Ignite instance resource, avoid usage of storage's instance
             @IgniteInstanceResource
             Ignite ignite;
 
@@ -221,5 +232,32 @@ public class ClientStorage {
         Collection<Integer> res = compute.broadcast(call);
 
         return res.stream().mapToInt(i -> i).sum();
+    }
+
+    /**
+     * @param msgTypeId Message type id.
+     * @param customerIds Customer ids.
+     * @param subj Subj.
+     * @param msg Message.
+     * @return Count of messages sent.
+     */
+    public int sendMessage(int msgTypeId, Set<Long> customerIds, String subj, String msg) {
+        Map<Long, EntryProcessorResult<Boolean>> results;
+
+        // TODO (lab 4) call mass entry processor invocation on cache for provided customer Identifiers.
+        // use client.sendMessageIfAbsent(msgTypeId, subj, msg) to actually add message to a customer
+        results = cache.invokeAll(customerIds, new EntryProcessor<Long, Client, Boolean>() {
+            @Override public Boolean process(MutableEntry<Long, Client> entry,
+                Object... arguments) throws EntryProcessorException {
+
+                Client client = entry.getValue();
+                if (client == null)
+                    return false;
+
+                return client.sendMessageIfAbsent(msgTypeId, subj, msg);
+            }
+        }, subj, msg);
+
+        return results.values().stream().mapToInt(result -> Boolean.TRUE.equals(result.get()) ? 1 : 0).sum();
     }
 }

@@ -18,6 +18,8 @@
 */
 package org.apache.training.ignite.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
@@ -39,6 +41,9 @@ public class Client {
     private String phoneNumber;
 
     private long lastLoginTs;
+
+    /** Messages: Offers, promotions. */
+    private List<CustomerMessage> messages = new ArrayList<>();
 
     public Client(int id, String name, String email, String phoneNumber) {
         this.id = id;
@@ -83,5 +88,21 @@ public class Client {
 
     public void lastLoginTs(long ts) {
         lastLoginTs = ts;
+    }
+
+    /**
+     * Not thread safe method
+     * @param typeId Type id.
+     * @param subj Subj.
+     * @param msg Message.
+     */
+    public boolean sendMessageIfAbsent(int typeId, String subj, String msg) {
+        if (messages == null)
+            messages = new ArrayList<>();
+
+        if (messages.stream().anyMatch(cm -> cm.id() == typeId))
+            return false;
+
+        return messages.add(new CustomerMessage(typeId, subj, msg));
     }
 }

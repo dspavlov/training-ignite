@@ -25,12 +25,13 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.internal.util.typedef.internal.A;
-import org.apache.training.ignite.model.Client;
 import org.apache.training.ignite.ClientStorage;
+import org.apache.training.ignite.model.Client;
 
 /**
  * Stores test data into cache.
@@ -64,9 +65,13 @@ public class MassClientLoader {
             //emulating every client login operation
             list.forEach(client -> client.lastLoginTs(System.currentTimeMillis()));
 
-            storage.saveAll(list);
+            Set<Long> ids = storage.saveAll(list);
 
-            System.out.println("Clients in storage: " + storage.size());
+            int notified = storage.sendMessage(1, ids, "Join Apache Training Project",
+                "We encourage you to join Apache Training project. Visit https://training.apache.org/ for more deatail, ");
+
+            System.out.println("Clients " + ids.size() + " were added, todal in storage: " + storage.size() +
+                " Clients notified about new offer: " + notified);
         }
         catch (Exception e) {
             e.printStackTrace();
